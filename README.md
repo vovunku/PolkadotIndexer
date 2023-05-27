@@ -34,10 +34,28 @@ For the `subql-starter` project, you can try to query with the following code to
 
 ##### Reward payouts for each account
 
+rewards sorted by payout
+
 ```graphql
 {
   query {
   	rewardPayouts(first: 10, orderBy: HOW_MUCH_DESC) {
+      nodes {
+        id,
+        who,
+        howMuch,
+      }
+    }
+  }
+}
+```
+
+rewards for some account
+
+```
+{
+  query {
+  	rewardPayouts(first: 10, filter: {who: {equalTo: "13SkL2uACPqBzpKBh3d2n5msYNFB2QapA5vEDeKeLjG2LS3Y"}}) {
       nodes {
         id,
         who,
