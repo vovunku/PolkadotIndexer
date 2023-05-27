@@ -33,7 +33,12 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleEvent
+        - handler: handleRewardPayout
+          kind: substrate/EventHandler
+          filter:
+            module: staking
+            method: Rewarded
+        - handler: handleAccountGain
           kind: substrate/EventHandler
           filter:
             module: staking

@@ -6,5 +6,12 @@ type RewardPayout @entity {
   id: ID! # block-id
 
   who: String
-  howmuch: BigInt
+  howMuch: BigInt
+}
+
+type AccountGain @entity {
+  id: ID! # account
+
+  howMuch: BigInt!
+  lastSync: BigInt
 }

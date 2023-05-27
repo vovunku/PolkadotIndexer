@@ -32,14 +32,32 @@ Finally, you should see a GraphQL playground is showing in the explorer and the 
 
 For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
 
+##### Reward payouts for each account
+
 ```graphql
 {
   query {
-  	rewardPayouts(first: 10, orderBy: HOWMUCH_DESC) {
+  	rewardPayouts(first: 10, orderBy: HOW_MUCH_DESC) {
       nodes {
         id,
         who,
-        howmuch,
+        howMuch,
+      }
+    }
+  }
+}
+```
+
+##### Rewards accumulated for each account
+
+```graphql
+{
+  query {
+  	accountGains(first: 10, orderBy: HOW_MUCH_DESC) {
+      nodes {
+        id,
+        howMuch,
+        lastSync
       }
     }
   }

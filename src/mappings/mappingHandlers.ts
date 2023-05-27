@@ -1,13 +1,11 @@
 import {
-  SubstrateExtrinsic,
   SubstrateEvent,
-  SubstrateBlock,
 } from "@subql/types";
-import { RewardPayout } from "../types";
+import { AccountGain, RewardPayout } from "../types";
 import { Balance } from "@polkadot/types/interfaces";
 import assert from "assert";
 
-export async function handleEvent(event: SubstrateEvent): Promise<void> {
+export async function handleRewardPayout(event: SubstrateEvent): Promise<void> {
   const {
     event: {
       data: [account, balance],
@@ -19,11 +17,44 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
   );
 
   record.who = account.toString();
-  //Big integer type Balance of a transfer event
-  record.howmuch = (balance as Balance).toBigInt();
+  //Big integer type Balance of a payout event
+  record.howMuch = (balance as Balance).toBigInt();
 
   logger.info("\nREWARD in block : " + record.id,
               "\nFOR : " + record.who,
-              "\nBIGINT : " + record.howmuch,)
+              "\nBIGINT : " + record.howMuch,)
+  await record.save();
+}
+
+function newAccountGain(id: string) {
+  let record = new AccountGain(
+    id,
+    BigInt(0)
+  )
+  return record;
+}
+
+export async function handleAccountGain(event: SubstrateEvent): Promise<void> {
+  const {
+    event: {
+      data: [account, balance],
+    },
+  } = event;
+
+  let record = await AccountGain.get(
+    account.toString()
+  );
+
+  if (record === undefined) {
+    record = newAccountGain(account.toString())
+  }
+
+  //Big integer type Balance of a payout event
+  record.howMuch += (balance as Balance).toBigInt();
+
+  record.lastSync = event.block.block.header.number.toBigInt();
+
+  logger.info("\nNEW REWARD FOR : " + record.id,
+              "\nTOTAL : " + record.howMuch,)
   await record.save();
 }
