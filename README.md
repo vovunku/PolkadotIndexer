@@ -52,7 +52,7 @@ rewards sorted by payout
 
 rewards for some account
 
-```
+```graphql
 {
   query {
   	rewardPayouts(first: 10, filter: {who: {equalTo: "13SkL2uACPqBzpKBh3d2n5msYNFB2QapA5vEDeKeLjG2LS3Y"}}) {
@@ -76,6 +76,22 @@ rewards for some account
         id,
         howMuch,
         lastSync
+      }
+    }
+  }
+}
+```
+
+##### Child Bounties (base bounties are not interesting)
+
+```graphql
+{
+  query {
+  	childBounties(first: 10) {
+      nodes {
+        id,
+        claimedBy,
+        reward
       }
     }
   }

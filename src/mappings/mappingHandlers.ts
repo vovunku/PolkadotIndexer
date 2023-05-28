@@ -1,7 +1,7 @@
 import {
   SubstrateEvent,
 } from "@subql/types";
-import { AccountGain, RewardPayout } from "../types";
+import { AccountGain, RewardPayout, ChildBounty } from "../types";
 import { Balance } from "@polkadot/types/interfaces";
 import assert from "assert";
 
@@ -56,5 +56,43 @@ export async function handleAccountGain(event: SubstrateEvent): Promise<void> {
 
   logger.info("\nNEW REWARD FOR : " + record.id,
               "\nTOTAL : " + record.howMuch,)
+  await record.save();
+}
+
+
+
+export async function handleChildBountiesAdded(event: SubstrateEvent): Promise<void> {
+  const {
+    event: {
+      data: [rootId, childId],
+    },
+  } = event;
+
+  let record = new ChildBounty(rootId + "-" + childId);
+  // record.createdBy = event. TODO: find sender
+
+  logger.info("\nNEW CHILDBOUNTY" +
+              "\nROOT : " + rootId,
+              "\nPARENT : " + childId,)
+  await record.save();
+}
+
+export async function handleChildBountiesClaimed(event: SubstrateEvent): Promise<void> {
+  const {
+    event: {
+      data: [rootId, childId, amount, receiver],
+    },
+  } = event;
+
+  let record = await ChildBounty.get(rootId + "-" + childId);
+
+  assert(record !== undefined);
+
+  record.reward = (amount as Balance).toBigInt();
+  record.claimedBy = receiver.toString();
+
+  logger.info("\CHALDBOUNTY CLAIM" +
+              "\nREWARD : " + record.reward,
+              "\nCLAIMEDBY : " + record.claimedBy,)
   await record.save();
 }

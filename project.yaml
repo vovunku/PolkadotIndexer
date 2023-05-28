@@ -29,7 +29,7 @@ network:
   dictionary: "https://api.subquery.network/sq/subquery/polkadot-dictionary"
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 15695630
+    startBlock: 15115880
     mapping:
       file: ./dist/index.js
       handlers:
@@ -43,3 +43,13 @@ dataSources:
           filter:
             module: staking
             method: Rewarded
+        - handler: handleChildBountiesAdded
+          kind: substrate/EventHandler
+          filter:
+            module: childBounties
+            method: Added
+        - handler: handleChildBountiesClaimed
+          kind: substrate/EventHandler
+          filter:
+            module: childBounties
+            method: Claimed

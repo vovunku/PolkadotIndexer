@@ -15,3 +15,12 @@ type AccountGain @entity {
   howMuch: BigInt!
   lastSync: BigInt
 }
+
+type ChildBounty @entity {
+  id: ID! # root_id-child_id
+
+  createdBy: String
+  awardedTo: String
+  claimedBy: String
+  reward: BigInt
+}
